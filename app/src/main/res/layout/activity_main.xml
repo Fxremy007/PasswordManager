@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+
     <TextView
         android:id="@+id/generatePassword_title"
         android:layout_width="wrap_content"
@@ -33,6 +35,8 @@
         android:id="@+id/Length"
         android:layout_width="409dp"
         android:layout_height="27dp"
+        android:min="8"
+        android:max="30"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

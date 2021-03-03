@@ -50,7 +50,7 @@ public class MainActivity<CurrentActvity> extends AppCompatActivity
         button1 = findViewById(R.id.Generate);
         button2 = findViewById(R.id.copy);
         seekBar = findViewById(R.id.Length);
-        this.seekBar.setMax(100);
+        this.seekBar.setMax(30);
         this.seekBar.setProgress(8);
 
 
@@ -66,6 +66,7 @@ public class MainActivity<CurrentActvity> extends AppCompatActivity
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
+
         });
 
         button1.setOnClickListener(new View.OnClickListener()
@@ -79,6 +80,7 @@ public class MainActivity<CurrentActvity> extends AppCompatActivity
                     {
                         option = 1;
                         textView1.setText(generatePassword(progress,option));
+
                     }
 
                     if (radioButton2.isChecked())
