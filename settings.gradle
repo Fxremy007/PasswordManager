@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "Password Manager V1.0"
+rootProject.name = "MobApp - Project"

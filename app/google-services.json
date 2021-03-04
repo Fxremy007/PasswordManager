@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "545864764796",
+    "project_id": "passwordmanager-rhnd",
+    "storage_bucket": "passwordmanager-rhnd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545864764796:android:18fb3c0b58ef91d2c868f9",
+        "android_client_info": {
+          "package_name": "com.example.mobapp_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545864764796-nqqojghrpllfu2h8i8pud6g5dna3opq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUywALfhcG_IpUzdqvZ-iNqWwi4LMsXMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545864764796-nqqojghrpllfu2h8i8pud6g5dna3opq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
