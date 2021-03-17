@@ -64,10 +64,8 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
 
-        //Log.d(TAG, "Id User : " + idUser);
         idUser = user.getUid(); //plantage
         Log.d(TAG, "Id User : " + idUser);
-
 
         websitesCollection = db.collection("Users").document("Website").collection(idUser);
         Log.d(TAG, "Websites collection id : " + websitesCollection);
@@ -85,7 +83,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 websitesList.clear();
 
-                for(DocumentSnapshot snapshot : value) { //plantage
+                for(DocumentSnapshot snapshot : value) {
                     websitesList.add(snapshot.getString("Name"));
                 }
 
@@ -149,12 +147,11 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
     private void getUser() {
         FirebaseUser user = mAuth.getCurrentUser();
+        TextView nameUser = findViewById(R.id.nameUser);
         if (user != null) {
             Log.d(TAG, "User connected");
             // Name, email address
             String name = user.getDisplayName();
-
-            TextView nameUser = findViewById(R.id.nameUser);
             nameUser.setText(name);
         } else {
             Log.d(TAG, "User not connected");
