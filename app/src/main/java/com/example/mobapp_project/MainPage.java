@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -35,12 +37,16 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    FirebaseUser user;
 
     ListView listView;
+    CollectionReference websitesCollection;
 
     private List<String> websitesList = new ArrayList<>();
 
-    private String idUser;
+    private String idUser, idDocument;
+
+    private String name, url, login, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,85 +57,92 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         db = FirebaseFirestore.getInstance();
 
         this.getUser();
-        FirebaseUser user = mAuth.getCurrentUser();
-        idUser = user.getUid();
-        
-        listView = (ListView)findViewById(R.id.listView);
+        user = mAuth.getCurrentUser();
+    }
 
-        CollectionReference websitesCollection = db.collection("Users").document("Website").collection(idUser);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Log.d(TAG, "Id User : " + idUser);
+        idUser = user.getUid(); //plantage
+        Log.d(TAG, "Id User : " + idUser);
+
+
+        websitesCollection = db.collection("Users").document("Website").collection(idUser);
+        Log.d(TAG, "Websites collection id : " + websitesCollection);
         websitesCollection.orderBy("Name");
 
+        listView = (ListView)findViewById(R.id.listView);
 
-        /*websitesCollection.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            //QueryDocumentSnapshot document = null;
-                            //while (document.exists()) {
-                                Log.d(TAG, "Test passage");
-                            String name = "";
-                            ArrayList<String> arrayList2 = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                    Log.d(TAG, String.valueOf(document.get("Name")));
-                                    name = String.valueOf(document.get("Name"));
-                                    TextView test = findViewById(R.id.textView2);
-                                    test.setText(name);
-                                }
-                            arrayList2.add(name);
-                            TextView test = findViewById(R.id.textView2);
-                            test.setText((CharSequence) arrayList2);
-                            //}
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+        showList();
+        selectElement();
+    }
 
-        //ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-        //listView.setAdapter(arrayAdapter);
-        */
+    private void showList() {
+        websitesCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                websitesList.clear();
 
-    websitesCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            websitesList.clear();
+                for(DocumentSnapshot snapshot : value) { //plantage
+                    websitesList.add(snapshot.getString("Name"));
+                }
 
-            for(DocumentSnapshot snapshot : value) {
-                websitesList.add(snapshot.getString("Name"));
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_selectable_list_item, websitesList);
+                adapter.notifyDataSetChanged();
+                listView.setAdapter(adapter);
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_selectable_list_item, websitesList);
-            adapter.notifyDataSetChanged();
-            listView.setAdapter(adapter);
-        }
-    });
+        });
+    }
 
-    //arrayList.add("teeest après blabla");
-
+    private void selectElement() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DocumentReference websiteDocument = db.collection("Users").document("Website").collection(idUser).document(listView.getItemAtPosition(position).toString());
-                websiteDocument
-                        //.whereEqualTo("Name", listView.getItemAtPosition(position).toString())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                                Toast.makeText(MainPage.this, listView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d(TAG, "No such document");
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    }
-                });
+
+                name = (listView.getItemAtPosition(position).toString());
+
+                showItems(name);
+            }
+        });
+    }
+
+    private void showWebsite() {
+        Intent i = new Intent(this, ModifyWebsite.class);
+
+        i.putExtra("IdDocument", idDocument);
+        if (name != null) {
+            i.putExtra("Name", name);
+        }
+        if (url != null) {
+            i.putExtra("URL", url);
+        }
+        if (login != null) {
+            i.putExtra("Login", login);
+        }
+        if (password != null) {
+            i.putExtra("Password", password);
+        }
+
+        startActivity(i);
+    }
+
+    private void showItems(String name) {
+        websitesCollection
+                .whereEqualTo("Name", name)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                for(DocumentSnapshot snapshot : value) {
+                    idDocument = snapshot.getId();
+                    url = snapshot.getString("URL");
+                    login = snapshot.getString("Login");
+                    password = snapshot.getString("Password");
+
+                    showWebsite();
+                }
             }
         });
     }

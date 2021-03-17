@@ -8,48 +8,115 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ModifyWebsite extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
 
-    public static final String TAG = "CreateWebsite";
+    public static final String TAG = "ModifyWebsite";
 
-    private String name, url, login, password, id;
+    private String name, url, login, password, idUser, idDocument;
+
+    EditText txt_name;
+    EditText txt_url;
+    EditText txt_login;
+    EditText txt_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_website);
 
-        EditText txt_name = (EditText)findViewById((R.id.nameWebsite));
-        name = txt_name.getText().toString().trim();
-        EditText txt_url = (EditText)findViewById((R.id.url));
-        url = txt_url.getText().toString().trim();
-        EditText txt_login = (EditText)findViewById((R.id.loginWebsite));
-        login = txt_login.getText().toString().trim();
-        EditText txt_password = (EditText)findViewById((R.id.passwordWebsite));
-        password = txt_password.getText().toString().trim();
+        Intent i = getIntent();
+        if (i != null) {
+            if (i.hasExtra("IdDocument")) {
+                idDocument = i.getStringExtra("IdDocument");
+            }
+            if (i.hasExtra("Name")) {
+                name = i.getStringExtra("Name");
+                txt_name = (EditText) findViewById((R.id.nameWebsiteModify));
+                txt_name.setText(name);
+            }
+            if (i.hasExtra("URL")) {
+                url = i.getStringExtra("URL");
+                txt_url = (EditText)findViewById((R.id.urlModify));
+                txt_url.setText(url);
+            }
+            if (i.hasExtra("Login")) {
+                login = i.getStringExtra("Login");
+                txt_login = (EditText)findViewById((R.id.loginWebsiteModify));
+                txt_login.setText(login);
+            }
+            if (i.hasExtra("Password")) {
+                password = i.getStringExtra("Password");
+                txt_password = (EditText)findViewById((R.id.passwordWebsiteModify));
+                txt_password.setText(password);
+            }
+        }
 
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        id = user.getUid();
+        idUser = user.getUid();
+    }
+
+    protected void onStart() {
+        super.onStart();
 
 
+    }
+
+    private void updateText() {
+        txt_name = (EditText) findViewById((R.id.nameWebsiteModify));
+        name = txt_name.getText().toString().trim();
+        txt_name.setText(name);
+
+        txt_url = (EditText)findViewById((R.id.urlModify));
+        url = txt_url.getText().toString().trim();
+        txt_url.setText(url);
+
+        txt_login = (EditText)findViewById((R.id.loginWebsiteModify));
+        login = txt_login.getText().toString().trim();
+        txt_login.setText(login);
+
+        txt_password = (EditText)findViewById((R.id.passwordWebsiteModify));
+        password = txt_password.getText().toString().trim();
+        txt_password.setText(password);
     }
 
     private void updateWebsite() {
+        db.collection("Users").document("Website").collection(idUser).document(idDocument)
+                .update("Name", name,
+                        "URL", url,
+                        "Login", login,
+                        "Password", password
+                )
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        Toast.makeText(getApplicationContext(), "Website modified", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error editing document", e);
+                    }
+                });
     }
 
     private void deleteWebsite() {
-        /*db.collection("Users").document("Website").collection(id) //manque un .document() avec l'ID du site sélectionné
+        db.collection("Users").document("Website").collection(idUser).document(idDocument)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -62,7 +129,7 @@ public class ModifyWebsite extends AppCompatActivity implements View.OnClickList
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error deleting document", e);
                     }
-                });*/
+                });
     }
 
     @Override
@@ -70,11 +137,14 @@ public class ModifyWebsite extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_delete :
                 deleteWebsite();
+                Intent i_delete = new Intent(this, MainPage.class);
+                startActivity(i_delete);
                 break;
             case R.id.btn_update :
+                updateText();
                 updateWebsite();
                 break;
-            case R.id.txt_back:
+            case R.id.txt_backModify:
                 Intent i_back = new Intent(this, MainPage.class);
                 startActivity(i_back);
                 break;

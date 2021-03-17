@@ -28,13 +28,20 @@ public class CreateWebsite extends AppCompatActivity implements View.OnClickList
 
     public static final String TAG = "CreateWebsite";
 
-    private String name, url, login, password;
+    private String name, url, login, password, id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_website);
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        id = user.getUid();
+    }
+
+    protected void onStart() {
+        super.onStart();
     }
 
     private void createWebsite () {
@@ -47,11 +54,8 @@ public class CreateWebsite extends AppCompatActivity implements View.OnClickList
         EditText txt_password = (EditText)findViewById((R.id.passwordWebsite));
         password = txt_password.getText().toString().trim();
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        String id = user.getUid();
-
         // Add a new document with a generated id.
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>(); //plantage
         data.put("Name", name);
         data.put("URL", url);
         data.put("Login", login);
