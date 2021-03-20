@@ -150,6 +150,12 @@ public class SignIn_page extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_signIn_signIn :

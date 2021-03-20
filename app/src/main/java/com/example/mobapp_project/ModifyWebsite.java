@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,7 +18,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ModifyWebsite extends AppCompatActivity implements View.OnClickListener {
@@ -25,11 +28,10 @@ public class ModifyWebsite extends AppCompatActivity implements View.OnClickList
     public static final String TAG = "ModifyWebsite";
 
     private String name, url, login, password, idUser, idDocument;
+    private int backButtonCount = 0;
 
-    EditText txt_name;
-    EditText txt_url;
-    EditText txt_login;
-    EditText txt_password;
+    EditText txt_name, txt_url, txt_login, txt_password;
+    CheckBox checkBox_show;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +69,25 @@ public class ModifyWebsite extends AppCompatActivity implements View.OnClickList
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         idUser = user.getUid();
+
+        checkBox_show = (CheckBox)findViewById(R.id.checkBox_showPassword_modify);
+
+        checkBox_show.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    //show password
+                    txt_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                } else {
+                    //hide password
+                    txt_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+            }
+        });
     }
 
     protected void onStart() {
         super.onStart();
-
-
     }
 
     private void updateText() {
@@ -130,6 +145,17 @@ public class ModifyWebsite extends AppCompatActivity implements View.OnClickList
                         Log.w(TAG, "Error deleting document", e);
                     }
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backButtonCount >= 1) {
+            Intent i_back = new Intent(this, MainPage.class);
+            startActivity(i_back);
+        } else {
+            Toast.makeText(this, "Warning: changes will not be saved", Toast.LENGTH_SHORT).show();
+            backButtonCount++;
+        }
     }
 
     @Override

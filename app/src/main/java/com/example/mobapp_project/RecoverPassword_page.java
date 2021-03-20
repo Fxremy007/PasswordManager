@@ -55,6 +55,12 @@ public class RecoverPassword_page extends AppCompatActivity implements View.OnCl
     }
 
     @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_recover :
