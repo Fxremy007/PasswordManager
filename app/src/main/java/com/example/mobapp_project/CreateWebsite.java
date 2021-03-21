@@ -55,13 +55,13 @@ public class CreateWebsite extends AppCompatActivity implements View.OnClickList
         popup = new Popup(this);
 
         txt_name = (EditText)findViewById(R.id.nameWebsite);
-        name = txt_name.getText().toString().trim();
+
         txt_url = (EditText)findViewById(R.id.url);
-        url = txt_url.getText().toString().trim();
+
         txt_login = (EditText)findViewById(R.id.loginWebsite);
-        login = txt_login.getText().toString().trim();
+
         txt_password = (EditText)findViewById(R.id.passwordWebsite);
-        password = txt_password.getText().toString().trim();
+
         checkBox_show = (CheckBox)findViewById(R.id.checkBox_showPassword_create);
 
         checkBox_show.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -97,7 +97,10 @@ public class CreateWebsite extends AppCompatActivity implements View.OnClickList
     }
 
     private void createWebsite () {
-
+        name = txt_name.getText().toString().trim();
+        url = txt_url.getText().toString().trim();
+        login = txt_login.getText().toString().trim();
+        password = txt_password.getText().toString().trim();
 
         // Add a new document with a generated id.
         Map<String, Object> data = new HashMap<>();
@@ -173,30 +176,24 @@ public class CreateWebsite extends AppCompatActivity implements View.OnClickList
                 popup.getBtn_generate().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(error())
-                        {
-                            if(popup.getOptFull().isChecked())
-                            {
+                        if (error()) {
+                            if (popup.getOptFull().isChecked()) {
                                 option = 1;
-                                popup.getPasswordGenerate().setText("The generated password is : " + generatePassword(progressVal, option));
                                 copiedPassword = generatePassword(progressVal, option);
+                                popup.getPasswordGenerate().setText("The generated password is : " + copiedPassword);
                             }
 
-                            if (popup.getOptNumbers().isChecked())
-                            {
+                            if (popup.getOptNumbers().isChecked()) {
                                 option = 2;
-                                popup.getPasswordGenerate().setText("The generated password is : " + generatePassword(progressVal, option));
                                 copiedPassword = generatePassword(progressVal, option);
+                                popup.getPasswordGenerate().setText("The generated password is : " + copiedPassword);
                             }
-
                         }
                     }
                 });
-                popup.getCopyText().setOnClickListener(new View.OnClickListener()
-                {
+                popup.getCopyText().setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
+                    public void onClick(View view) {
                         txt_password.setText(copiedPassword);
                         popup.hide();
                     }
