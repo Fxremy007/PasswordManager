@@ -18,6 +18,8 @@ projet, notre MCD ainsi que le logo pour l'îcone l'application que nous avons f
 Fonctionnement de l'application :<br/>
 Au démarrage, elle emmène sur la page de connexion. Celle-ci permet soit de se connecter, soit redirige
 vers une activité permettant de s'inscrire, soit de récupérer son mot de passe via l'envoie d'un mail.
+L’inscription n’est possible que lorsque tous les champs sont correctement remplis, sinon des messages
+d’erreurs s’affichent.
 Une fois connecté, il est possible de voir la liste des sites précédemment enregistré, d'en rajouter de
 nouveaux ou de se déconnecter.
 Lorsque l'on ajoute un site, il est possible de faire générer un mot de passe selon plusieurs critères :
