@@ -15,7 +15,7 @@
     <string name="txt_password_createAccount">Password</string>
     <string name="txt_passwordConfirm">Confirm your password</string>
     <string name="btn_signIn_signIn">Sign In</string>
-    <string name="txt_alreadyAnAccount">Forgot your password ?</string>
+    <string name="txt_alreadyAnAccount">I already have an account</string>
 
     <string name="txt_recoverPassword">Recover your password</string>
     <string name="txt_email_recover">Email</string>
