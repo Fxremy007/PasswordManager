@@ -45,9 +45,11 @@ faire planter l'application.
 
 
 Difficultés rencontrées :</br>
-La plus grosse difficulté concernait Firebase et la manipulation de la base de données. Nous familiariser
-avec, la comprendre et comprendre comment faire ce que nous voulions s'est révélé compliqué, surtout
-concernant la récupération et l'affichage de données provenant de la base.
+La plus grosse difficulté concernait Firebase et la manipulation de la base de données, mais nous tenions
+à l’utiliser afin de rendre l’application accessible via plusieurs appareils, voire sur PC à travers une
+application qui pourrait être créée par la suite, tout en conservant ses données. Nous familiariser avec,
+la comprendre et comprendre comment faire ce que nous voulions s'est révélé compliqué, surtout concernant
+la récupération et l'affichage de données provenant de la base.
 
 
 Amélioration possible :</br>
